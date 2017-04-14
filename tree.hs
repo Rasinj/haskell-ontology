@@ -8,9 +8,6 @@ data Node = Node String Int Node
 compare_node :: Node -> Node -> Bool
 compare_node a b = a == b 
 
-findLCA :: Node -> Node -> Int
-findLCA a b = if a == b then 1 else 0
-
 unpack (Node b c d) = d
 unpack (NodeLeaf b c) = Empty 
 unpack Empty = Empty 
