@@ -24,8 +24,8 @@ mysecondNode = Node "Process" 2 (Node "Objict" 1  (NodeLeaf "Root" 0 ))
 
 getLevels a b = map getLevel [a,b]
 
-compareVector args = compare (head args) (last args)
-compareLevels a b = compareVector (getLevels a b)
+compareNode args = compare (head args) (last args)
+compareLevels a b = compareNode (getLevels a b)
 
 findLastCommonLevel a b = case (compareLevels a b) of
                             EQ  ->  case (getString a) == (getString b) of
