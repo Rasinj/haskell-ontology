@@ -1,3 +1,5 @@
+-- The prototypical tree structure. A Description at each level and a level 
+-- with information about the depth from the root
 data Node = Node String Int Node
            | NodeLeaf String Int 
            | Empty
