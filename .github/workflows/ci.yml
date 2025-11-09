@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, claude/** ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        ghc: ['8.10.7', '9.0.2', '9.2.8', '9.4.8', '9.6.3']
+        cabal: ['3.10']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Haskell
+      uses: haskell-actions/setup@v2
+      with:
+        ghc-version: ${{ matrix.ghc }}
+        cabal-version: ${{ matrix.cabal }}
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cabal/store
+          ~/.cabal/packages
+          dist-newstyle
+        key: ${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('**/*.cabal', '**/cabal.project') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.ghc }}-
+
+    - name: Update package index
+      run: cabal update
+
+    - name: Build dependencies
+      run: cabal build --only-dependencies --enable-tests
+
+    - name: Build project
+      run: cabal build --enable-tests
+
+    - name: Run tests
+      run: cabal test --test-show-details=direct
+
+    - name: Generate documentation
+      run: cabal haddock
+
+    - name: Check for warnings
+      run: cabal build --ghc-options="-Werror"
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Haskell
+      uses: haskell-actions/setup@v2
+      with:
+        ghc-version: '9.6.3'
+        cabal-version: '3.10'
+
+    - name: Install HLint
+      run: |
+        cabal update
+        cabal install hlint
+
+    - name: Run HLint
+      run: hlint src/ test/
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Haskell
+      uses: haskell-actions/setup@v2
+      with:
+        ghc-version: '9.6.3'
+        cabal-version: '3.10'
+
+    - name: Update package index
+      run: cabal update
+
+    - name: Build with coverage
+      run: cabal build --enable-coverage
+
+    - name: Run tests with coverage
+      run: cabal test --enable-coverage
+
+    - name: Generate coverage report
+      run: |
+        cabal test --enable-coverage
+        HPC_DIR=$(find dist-newstyle -name 'hpc' -type d | head -n 1)
+        if [ -n "$HPC_DIR" ]; then
+          echo "Coverage report generated in $HPC_DIR"
+        fi
