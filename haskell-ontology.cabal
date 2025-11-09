@@ -1,0 +1,54 @@
+cabal-version:      2.4
+name:               haskell-ontology
+version:            0.1.0.0
+synopsis:           A tree-based ontology system for finding common ancestors
+description:
+    A Haskell library for representing hierarchical ontologies as tree structures
+    and finding the lowest common ancestor between nodes.
+license:            MIT
+license-file:       LICENSE
+author:             Rasinj
+maintainer:         rasinj@example.com
+category:           Data
+build-type:         Simple
+extra-doc-files:    README.md
+                    CHANGELOG.md
+tested-with:        GHC == 8.10.7
+                  , GHC == 9.0.2
+                  , GHC == 9.2.5
+                  , GHC == 9.4.5
+                  , GHC == 9.6.2
+
+common warnings
+    ghc-options: -Wall
+                 -Wcompat
+                 -Widentities
+                 -Wincomplete-record-updates
+                 -Wincomplete-uni-patterns
+                 -Wmissing-export-lists
+                 -Wmissing-home-modules
+                 -Wpartial-fields
+                 -Wredundant-constraints
+
+library
+    import:           warnings
+    exposed-modules:  Data.Ontology.Tree
+    build-depends:    base >= 4.14 && < 5
+                    , text >= 1.2 && < 2.2
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+test-suite haskell-ontology-test
+    import:           warnings
+    default-language: Haskell2010
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Main.hs
+    other-modules:    OntologyTreeSpec
+    build-depends:
+        base >= 4.14 && < 5
+      , haskell-ontology
+      , hspec >= 2.7 && < 2.12
+      , QuickCheck >= 2.14 && < 2.15
+    build-tool-depends: hspec-discover:hspec-discover >= 2.7 && < 2.12
+    ghc-options: -threaded -rtsopts -with-rtsopts=-N

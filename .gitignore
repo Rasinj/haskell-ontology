@@ -1,0 +1,40 @@
+# Cabal build artifacts
+dist/
+dist-newstyle/
+cabal-dev
+*.o
+*.hi
+*.chi
+*.chs.h
+*.dyn_o
+*.dyn_hi
+.hpc
+.hsenv
+.cabal-sandbox/
+cabal.sandbox.config
+*.prof
+*.aux
+*.hp
+*.eventlog
+
+# Stack build artifacts
+.stack-work/
+stack.yaml.lock
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# GHC
+.ghc.environment.*
+
+# Testing
+.hspec-failures
+
+# Temporary files
+*.tmp
+.*.tmp
